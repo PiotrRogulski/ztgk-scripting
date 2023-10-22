@@ -1,9 +1,7 @@
 #include "Edge.h"
 
-namespace duckApp
-{
-    Edge::Edge(int v1, int v2, int t1, int t2)
-    {
+namespace duck_app {
+    Edge::Edge(const int v1, const int v2, const int t1, const int t2) {
         vertex_position_1 = v1;
         vertex_position_2 = v2;
 

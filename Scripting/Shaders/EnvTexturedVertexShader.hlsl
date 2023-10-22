@@ -13,20 +13,17 @@ cbuffer cbProj : register(b2) //Vertex Shader constant buffer slot 2
     matrix projMatrix;
 };
 
-struct VSInput
-{
+struct VSInput {
     float3 pos : POSITION;
     float3 norm : NORMAL0;
 };
 
-struct VSOutput
-{
+struct VSOutput {
     float4 pos : SV_POSITION;
     float3 tex : TEXCOORD0;
 };
 
-VSOutput main(VSInput i)
-{
+VSOutput main(VSInput i) {
     VSOutput o;
 
     o.tex = normalize(i.pos);

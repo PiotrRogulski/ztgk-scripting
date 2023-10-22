@@ -1,17 +1,16 @@
 #pragma once
 
-namespace duckApp
-{
-    class AbsorptionTexture
-    {
+namespace duck_app {
+    class AbsorptionTexture {
     public:
         AbsorptionTexture();
 
-        int GetSize();
-        float GetValue(int x, int y);
+        [[nodiscard]] int GetSize() const;
+
+        [[nodiscard]] float GetValue(int x, int y) const;
 
     private:
-        static const unsigned int texture_size = 256;
-        float **absorption_texture;
+        static constexpr unsigned int texture_size = 256;
+        float** absorption_texture;
     };
 }

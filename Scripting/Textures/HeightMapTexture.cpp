@@ -1,17 +1,18 @@
 #include "HeightMapTexture.h"
 
-namespace duckApp
-{
-    HeightMapTexture::HeightMapTexture()
-    {
+namespace duck_app {
+    HeightMapTexture::HeightMapTexture() {
         this->height_map_texture = new float*[this->texture_size];
 
-        for (int i = 0; i < this->texture_size; i++)
+        for (auto i = 0U; i < this->texture_size; i++) {
             this->height_map_texture[i] = new float[this->texture_size];
+        }
 
-        for (int x = 0; x < this->texture_size; x++)
-            for (int y = 0; y < this->texture_size; y++)
-                this->height_map_texture[x][y] = 0.0f;
+        for (auto x = 0U; x < this->texture_size; x++) {
+            for (auto y = 0U; y < this->texture_size; y++) {
+                this->height_map_texture[x][y] = 0.0F;
+            }
+        }
     }
 
     //void HeightMapTexture::SetValue(int x, int y, float value)

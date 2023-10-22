@@ -1,30 +1,24 @@
 #pragma once
 
-namespace duckApp
-{
-    class HeightMapTexture
-    {
+namespace duck_app {
+    class HeightMapTexture {
     public:
         HeightMapTexture();
 
-        inline void SetValue(int x, int y, float value)
-        {
+        void SetValue(const int x, const int y, const float value) const {
             this->height_map_texture[x][y] = value;
         }
 
-        inline int GetSize()
-        {
+        [[nodiscard]] int GetSize() const {
             return this->texture_size;
         }
-        
-        inline float GetValue(int x, int y)
-        {
+
+        [[nodiscard]] float GetValue(const int x, const int y) const {
             return this->height_map_texture[x][y];
         }
-        
+
     private:
-        static const unsigned int texture_size = 256;
-        float **height_map_texture;
+        static constexpr unsigned int texture_size = 256;
+        float** height_map_texture;
     };
 }
-

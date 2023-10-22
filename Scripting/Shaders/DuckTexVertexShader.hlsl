@@ -13,30 +13,25 @@ cbuffer cbProj : register(b2) //Vertex Shader constant buffer slot 2
     matrix projMatrix;
 };
 
-cbuffer cbTextureTransform : register(b3)
-{
+cbuffer cbTextureTransform : register(b3) {
     matrix texMatrix;
 };
 
-cbuffer cbCameraPosition : register(b5)
-{
+cbuffer cbCameraPosition : register(b5) {
     float3 camera_position;
 };
 
-cbuffer cbLightPosition : register(b4)
-{
+cbuffer cbLightPosition : register(b4) {
     float3 light_position;
 };
 
-struct VSInput
-{
+struct VSInput {
     float3 pos : POSITION0;
     float3 normal : NORMAL0;
     float2 tex : TEXCOORD0;
 };
 
-struct PSInput
-{
+struct PSInput {
     float4 pos : SV_POSITION;
     float3 worldPos : POSITION0;
     float3 light_position: POSITION1;
@@ -45,9 +40,8 @@ struct PSInput
     float2 tex : TEXCOORD0;
 };
 
-PSInput main(VSInput i)
-{
-    PSInput o = (PSInput)0;
+PSInput main(VSInput i) {
+    PSInput o;
 
     o.tex = i.tex;
 

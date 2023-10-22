@@ -7,16 +7,15 @@
 /* Project Includes */
 #include "GameObject.h"
 
-namespace duckApp
-{
-    class ScriptManager
-    {
+namespace duck_app {
+    class ScriptManager {
         /* TODO (2.01) Create Vector Of Game Objects That Contain Scripts */
         std::vector<GameObject*> gameObjects;
 
         /* TODO (2.02) Create Initialize And Finalize Python Methods */
-        void InitializePython();
-        void FinalizePython();
+        static void InitializePython();
+
+        static void FinalizePython();
 
         /* TODO (2.03) Create Scripts Changed Method */
         void ScriptsChanged();
@@ -24,6 +23,7 @@ namespace duckApp
     public:
         /* TODO (2.04) Create Constructor And Destructor */
         ScriptManager();
+
         ~ScriptManager();
 
         /* TODO (2.05) Create AddGameObjectScript Method That Takes GameObject Pointer Argument */
@@ -35,6 +35,7 @@ namespace duckApp
             * DispathOnUpdate Checks For Script Changes And Dispatches OnUpdate Method For All Game Objects
         */
         void DispatchOnCreate();
+
         void DispatchOnUpdate();
     };
 }

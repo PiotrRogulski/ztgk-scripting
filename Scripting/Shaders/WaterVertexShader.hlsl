@@ -13,29 +13,24 @@ cbuffer cbProj : register(b2) //Vertex Shader constant buffer slot 2
     matrix projMatrix;
 };
 
-cbuffer cbTextureTransform : register(b3)
-{
+cbuffer cbTextureTransform : register(b3) {
     matrix texMatrix0;
 };
 
-cbuffer cbTextureTransform : register(b4)
-{
+cbuffer cbTextureTransform : register(b4) {
     matrix texMatrix1;
 };
 
-cbuffer cbCameraPosition : register(b5)
-{
+cbuffer cbCameraPosition : register(b5) {
     float4 camPos;
 };
 
-struct VSInput
-{
+struct VSInput {
     float3 pos : POSITION0;
     float3 norm : NORMAL0;
 };
 
-struct PSInput
-{
+struct PSInput {
     float4 pos : SV_POSITION;
     float3 norm : NORMAL0;
     float3 localPos : POSITION0;
@@ -43,9 +38,8 @@ struct PSInput
     float4 camPos : TEXCOORD0;
 };
 
-PSInput main(VSInput i)
-{
-    PSInput o = (PSInput)0;
+PSInput main(VSInput i) {
+    PSInput o;
 
     o.localPos = i.pos;
     o.localPos.y = -0.4f; /* Water Level */

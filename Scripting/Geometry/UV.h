@@ -6,11 +6,8 @@
 
 #include "Vector.h"
 
-namespace duckApp
-{
-    struct UV
-    {
-    public:
+namespace duck_app {
+    struct UV {
         float u;
         float v;
 

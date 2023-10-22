@@ -2,34 +2,34 @@
 
 #include <array>
 
-#include <dxptr.h>
 #include <dxDevice.h>
+#include <dxptr.h>
 
 #include "../Geometry/Vector.h"
 
 using namespace mini;
 using namespace DirectX;
 
-namespace duckApp
-{
-    class WaveTexture
-    {
-    public:
+namespace duck_app {
+    class WaveTexture {
     public:
         WaveTexture() = default;
-        WaveTexture(DxDevice m_device);
 
-        void Update(DxDevice m_device);
+        explicit WaveTexture(const DxDevice& m_device);
+
+        void Update(const DxDevice& m_device) const;
+
         void SetValue(int x, int y, Vector value);
-        unsigned int GetSize() { return 256; }
 
-        dx_ptr<ID3D11ShaderResourceView> GetTexture(DxDevice m_device);
+        static unsigned int GetSize() { return 256; }
+
+        dx_ptr<ID3D11ShaderResourceView> GetTexture(const DxDevice& m_device) const;
 
     private:
         unsigned int texture_stride;
         unsigned int txture_size;
 
-        std::array<BYTE, 256 * 256 * 4> texture_data;
+        std::array<BYTE, 256ULL * 256ULL * 4ULL> texture_data;
 
         dx_ptr<ID3D11Texture2D> texture;
         dx_ptr<ID3D11ShaderResourceView> texture_resource_view;

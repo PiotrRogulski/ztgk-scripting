@@ -2,11 +2,8 @@
 
 #include "Triangle.h"
 
-namespace duckApp
-{
-    struct Edge
-    {
-    public:
+namespace duck_app {
+    struct Edge {
         int vertex_position_1;
         int vertex_position_2;
 

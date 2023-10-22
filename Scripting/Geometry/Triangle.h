@@ -6,11 +6,8 @@
 
 #include "Vector.h"
 
-namespace duckApp
-{
-    struct Triangle
-    {
-    public:
+namespace duck_app {
+    struct Triangle {
         short vertex_indices[3];
 
         DirectX::XMVECTOR vector_1;
@@ -23,10 +20,12 @@ namespace duckApp
 
         Triangle(short p1, short p2, short p3);
 
-        void SetXMVECTORs(std::vector<Vector> positions);
+        void SetXMVECTORs(const std::vector<Vector>& positions);
 
         //DirectX::XMVECTOR GetNormal(std::vector<Vector> positions);
-        DirectX::XMVECTOR GetLightVector(std::vector<Vector> positions, DirectX::XMVECTOR light_position);
-        bool IsBackFace(std::vector<Vector> positions, DirectX::XMMATRIX model_matrix, DirectX::XMVECTOR light_position);
+        [[nodiscard]] DirectX::XMVECTOR GetLightVector(std::vector<Vector> positions, DirectX::XMVECTOR light_position) const;
+
+        bool IsBackFace(const std::vector<Vector>& positions, const DirectX::XMMATRIX& model_matrix,
+                        DirectX::XMVECTOR light_position) const;
     };
 }

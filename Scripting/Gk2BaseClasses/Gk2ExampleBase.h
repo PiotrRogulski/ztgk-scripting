@@ -1,17 +1,15 @@
 #pragma once
 
-#include <dxApplication.h>
+#include <camera.h>
 #include <diDevice.h>
+#include <dxApplication.h>
 #include <keyboard.h>
 #include <mouse.h>
-#include <camera.h>
 
-namespace mini
-{
-    class Gk2ExampleBase : public DxApplication
-    {
+namespace mini {
+    class Gk2ExampleBase: public DxApplication {
     public:
-        Gk2ExampleBase(HINSTANCE hInstance, UINT width, UINT height, std::wstring title);
+        Gk2ExampleBase(HINSTANCE hInstance, UINT width, UINT height, const std::wstring& title);
 
     protected:
         bool HandleCameraInput(double dt);

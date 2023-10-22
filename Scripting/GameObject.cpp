@@ -1,42 +1,40 @@
 #include "GameObject.h"
 
-#include "Geometry\Mesh\MeshLoader.h"
+#include "Geometry/Mesh/MeshLoader.h"
 
 /* TODO (3.06) Include Python And PyBind11 Headers */
 
 
-namespace duckApp
-{
+namespace duck_app {
     const D3D11_INPUT_ELEMENT_DESC DuckLayout::Layout[3] =
     {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
     };
 
     const unsigned int GameObject::STRIDE = sizeof(DuckLayout);
     const unsigned int GameObject::OFFSET = 0;
 
-    GameObject::GameObject(DxDevice m_device,
-        const ConstantBuffer<DirectX::XMFLOAT4X4>& cbWorld,
-        const ConstantBuffer<DirectX::XMFLOAT4X4, 2>& cbView,
-        const ConstantBuffer<DirectX::XMFLOAT4X4>& cbProj,
-        const ConstantBuffer<DirectX::XMFLOAT4X4>& cbTex,
-        const dx_ptr<ID3D11SamplerState>& sampler)
-    {
-        MeshLoader mesh_loader;
-        MeshRobot duck_mesh_with_UV = mesh_loader.LoadDuck(duck_mesh, m_device);
+    GameObject::GameObject(const DxDevice& m_device,
+                           const ConstantBuffer<XMFLOAT4X4>& cbWorld,
+                           const ConstantBuffer<XMFLOAT4X4, 2>& cbView,
+                           const ConstantBuffer<XMFLOAT4X4>& cbProj,
+                           const ConstantBuffer<XMFLOAT4X4>& cbTex,
+                           const dx_ptr<ID3D11SamplerState>& sampler) {
+        const MeshLoader mesh_loader;
+        const auto duck_mesh_with_UV = mesh_loader.LoadDuck(duck_mesh, m_device);
         XMStoreFloat4x4(&duck_mesh_matrix, XMMatrixIdentity());
 
         this->LoadDuckLayout(m_device, duck_mesh_with_UV);
 
-        auto vsCode = m_device.LoadByteCode(L"DuckTexVertexShader.cso");
-        auto psCode = m_device.LoadByteCode(L"DuckTexPixelShader.cso");
+        const auto vsCode = m_device.LoadByteCode(L"DuckTexVertexShader.cso");
+        const auto psCode = m_device.LoadByteCode(L"DuckTexPixelShader.cso");
 
-        dx_ptr<ID3D11ShaderResourceView> m_surfaceTexture = m_device.CreateShaderResourceView(L"Duck_Mesh/ducktex.jpg");
+        const auto m_surfaceTexture = m_device.CreateShaderResourceView(L"Duck_Mesh/ducktex.jpg");
 
         duck_textured_effect = TexturedEffect(m_device.CreateVertexShader(vsCode), m_device.CreatePixelShader(psCode),
-            cbWorld, cbView, cbProj, cbTex, sampler, m_surfaceTexture);
+                                              cbWorld, cbView, cbProj, cbTex, sampler, m_surfaceTexture);
 
         m_inputLayout = m_device.CreateInputLayout(DuckLayout::Layout, vsCode);
 
@@ -46,15 +44,13 @@ namespace duckApp
         this->script->Initialize(this);
     }
 
-    void GameObject::LoadDuckLayout(DxDevice m_device, MeshRobot duck_mesh_info)
-    {
-        for (int i = 0; i < duck_mesh_info.vertices_positions.size(); i++)
-        {
+    void GameObject::LoadDuckLayout(const DxDevice& m_device, const MeshRobot& duck_mesh_info) {
+        for (auto i = 0; i < duck_mesh_info.vertices_positions.size(); i++) {
             DuckLayout layout;
 
-            Vector position = duck_mesh_info.vertices_positions[i];
-            Vector normal = duck_mesh_info.normal_vectors[i];
-            UV uv = duck_mesh_info.uvs[i];
+            const auto position = duck_mesh_info.vertices_positions[i];
+            const auto normal = duck_mesh_info.normal_vectors[i];
+            const auto uv = duck_mesh_info.uvs[i];
 
             layout.position = XMFLOAT3(position.x, position.y, position.z);
             layout.normal = XMFLOAT3(normal.x, normal.y, normal.z);
@@ -63,15 +59,14 @@ namespace duckApp
             duck_layout.push_back(layout);
         }
 
-        for (int i = 0; i < duck_mesh_info.triangles.size(); i++)
-        {
+        for (auto i = 0; i < duck_mesh_info.triangles.size(); i++) {
             indices.push_back(duck_mesh_info.triangles[i].vertex_indices[0]);
             indices.push_back(duck_mesh_info.triangles[i].vertex_indices[1]);
             indices.push_back(duck_mesh_info.triangles[i].vertex_indices[2]);
         }
 
         m_indices = m_device.CreateIndexBuffer(indices);
-        m_vertices = m_device.CreateVertexBuffer<DuckLayout>((UINT)duck_layout.size());
+        m_vertices = m_device.CreateVertexBuffer<DuckLayout>(static_cast<UINT>(duck_layout.size()));
 
         D3D11_MAPPED_SUBRESOURCE resource;
         auto hr = m_device.context()->Map(m_vertices.get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
@@ -80,12 +75,14 @@ namespace duckApp
         m_device.context()->Unmap(m_vertices.get(), 0);
     }
 
-    void GameObject::Render(DxDevice m_device, ConstantBuffer<XMFLOAT4X4> *m_cbWorldMtx,
-        ConstantBuffer<XMFLOAT4> camera_position, ConstantBuffer<XMFLOAT4> light_position)
-    {
+    void GameObject::Render(const DxDevice& m_device, ConstantBuffer<XMFLOAT4X4>* m_cbWorldMtx,
+                            const ConstantBuffer<XMFLOAT4>& camera_position,
+                            const ConstantBuffer<XMFLOAT4>& light_position) {
         XMStoreFloat4x4(&duck_mesh_matrix,
-            XMMatrixScaling(this->current_scale.x, this->current_scale.y, this->current_scale.z) * XMLoadFloat4x4(&this->current_rotation) *
-            XMMatrixTranslation(this->current_position.x, this->current_position.y, this->current_position.z));
+                        XMMatrixScaling(this->current_scale.x, this->current_scale.y, this->current_scale.z) *
+                        XMLoadFloat4x4(&this->current_rotation) *
+                        XMMatrixTranslation(this->current_position.x, this->current_position.y,
+                                            this->current_position.z));
 
         /* Set Duck Effect */
         duck_textured_effect.SetCameraPosition(camera_position);
@@ -97,7 +94,7 @@ namespace duckApp
         m_cbWorldMtx->Update(m_device.context(), duck_mesh_matrix);
 
         /* Create and Pass Buffers to Shaders */
-        ID3D11Buffer *vb[1] = { m_vertices.get() };
+        ID3D11Buffer* vb[1] = {m_vertices.get()};
 
         m_device.context()->IASetIndexBuffer(m_indices.get(), DXGI_FORMAT_R16_UINT, 0);
         m_device.context()->IASetVertexBuffers(0, 1, vb, &STRIDE, &OFFSET);
@@ -105,17 +102,17 @@ namespace duckApp
         m_device.context()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         /* Render Duck */
-        m_device.context()->DrawIndexed((int)indices.size(), 0U, 0U);
+        m_device.context()->DrawIndexed(static_cast<int>(indices.size()), 0U, 0U);
 
         /* CleanUp Made Outside */
     }
 
-    void GameObject::Update(DxDevice m_device, float dtime)
-    {
-        XMFLOAT3 up_float3 = XMFLOAT3(0.0f, 1.0f, 0.0f);
-        XMVECTOR up_vector = XMLoadFloat3(&up_float3);
+    void GameObject::Update(DxDevice m_device, float dtime) {
+        constexpr auto up_float3 = XMFLOAT3(0.0F, 1.0F, 0.0F);
+        const auto up_vector = XMLoadFloat3(&up_float3);
 
-        XMMATRIX rotation_matrix = XMMatrixLookAtRH(XMLoadFloat3(&this->next_position), XMLoadFloat3(&this->current_position), up_vector);
+        auto rotation_matrix = XMMatrixLookAtRH(XMLoadFloat3(&this->next_position),
+                                                XMLoadFloat3(&this->current_position), up_vector);
         rotation_matrix = XMMatrixInverse(nullptr, rotation_matrix);
 
         XMStoreFloat4x4(&this->current_rotation, XMMatrixRotationY(XM_PIDIV2) * rotation_matrix);

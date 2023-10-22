@@ -3,15 +3,11 @@
 
 #include "GameObject.h"
 
-namespace duckApp
-{
+namespace duck_app {
     /* TODO (1.12) Implement Constructor That Initializes Script File Instance */
     Script::Script(const std::string& filePath) : m_scriptFile(filePath) { }
 
-    Script::~Script()
-    {
-
-    }
+    Script::~Script() = default;
 
     /* TODO (1.13) Implement Initialize Method */
     /*
@@ -22,19 +18,16 @@ namespace duckApp
         * Gets All Implemented Methods From Script Implementation
         * Sets Given Game Object As Class Member
     */
-    void Script::Initialize(GameObject* gameObject)
-    {
+    void Script::Initialize(GameObject* gameObject) {
         PySys_SetPath(std::wstring(this->m_scriptFile.scriptName.begin(), this->m_scriptFile.scriptName.end()).c_str());
 
-        py::module pyModule = py::module::import(this->m_scriptFile.scriptName.c_str());
-        if (pyModule)
-        {
+        auto pyModule = py::module::import(this->m_scriptFile.scriptName.c_str());
+        if (pyModule) {
             auto pyClass = pyModule.attr(this->m_scriptFile.scriptName.c_str());
 
             this->pyClassObject = pyClass();
 
-            if (this->pyClassObject)
-            {
+            if (this->pyClassObject) {
                 this->pyClassObject.attr("gameObject") = gameObject;
 
                 this->onCreateMethod = this->pyClassObject.attr("OnCreate");
@@ -44,25 +37,20 @@ namespace duckApp
     }
 
     /* TODO (1.14) Implement FileChanged Method That Checks If File Has Changed */
-    bool Script::FileChanged()
-    {
+    bool Script::FileChanged() {
         return this->m_scriptFile.FileChanged();
     }
 
     /* TODO (1.15) Implement OnUpdate Method That Calls Python OnUpdate Sctipt Mathod */
-    void Script::OnUpdate()
-    {
-        if (this->onUpdateMethod)
-        {
+    void Script::OnUpdate() const {
+        if (this->onUpdateMethod) {
             this->onUpdateMethod();
         }
     }
 
     /* TODO (1.16) Implement OnCreate Method That Calls Python OnCreate Sctipt Mathod */
-    void Script::OnCreate()
-    {
-        if (this->onCreateMethod)
-        {
+    void Script::OnCreate() const {
+        if (this->onCreateMethod) {
             this->onCreateMethod();
         }
     }

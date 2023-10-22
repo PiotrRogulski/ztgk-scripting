@@ -6,21 +6,18 @@
 
 namespace py = pybind11;
 
-namespace duckApp
-{
+namespace duck_app {
     /* TODO (2.08) Implement Constructor And Destructor */
     /*
         * Constructor Initializes Python (Initialize Method)
         * Destructor Finalizes Python (Finalize Method)
     */
-    ScriptManager::ScriptManager()
-    {
-        this->InitializePython();
+    ScriptManager::ScriptManager() {
+        InitializePython();
     }
 
-    ScriptManager::~ScriptManager()
-    {
-        this->FinalizePython();
+    ScriptManager::~ScriptManager() {
+        FinalizePython();
     }
 
     /* TODO (2.09) Implement InitializePython Method */
@@ -29,8 +26,7 @@ namespace duckApp
         * Initializes Python Interpreter
         * Imports All Necessary Modules
     */
-    void ScriptManager::InitializePython()
-    {
+    void ScriptManager::InitializePython() {
         wchar_t pythonHome[] = L"../Common/Python";
 
         Py_SetPythonHome(pythonHome);
@@ -45,8 +41,7 @@ namespace duckApp
     /*
         * Finalize Python Interpreter
     */
-    void ScriptManager::FinalizePython()
-    {
+    void ScriptManager::FinalizePython() {
         py::finalize_interpreter();
     }
 
@@ -57,26 +52,24 @@ namespace duckApp
         * If Any Script Has Been Changed Reinitialize Python Interpreter (Finalize And Initialize)
         * Initialize All Game Object's Scripts One Again
     */
-    void ScriptManager::ScriptsChanged()
-    {
-        auto scriptChanged = std::any_of(this->gameObjects.begin(), this->gameObjects.end(),
-            [](GameObject* gameObject) {return gameObject->GetScript()->FileChanged(); });
+    void ScriptManager::ScriptsChanged() {
+        const auto scriptChanged = std::any_of(this->gameObjects.begin(), this->gameObjects.end(),
+                                               [](const GameObject* gameObject) {
+                                                   return gameObject->GetScript()->FileChanged();
+                                               });
 
-        if (scriptChanged)
-        {
+        if (scriptChanged) {
             this->FinalizePython();
             this->InitializePython();
 
-            for (auto gameObject : gameObjects)
-            {
+            for (const auto gameObject : gameObjects) {
                 gameObject->GetScript()->Initialize(gameObject);
             }
         }
     }
 
     /* TODO (2.12) Implement AddGameObjectsSctipt Method That Pushes Back Game Object Pointer */
-    void ScriptManager::AddGameObject(GameObject& gameObject)
-    {
+    void ScriptManager::AddGameObject(GameObject& gameObject) {
         this->gameObjects.push_back(&gameObject);
     }
 
@@ -85,22 +78,18 @@ namespace duckApp
         * Checks If Script File Has Changed
         * Calls Appropriate Method On Game Object Instance
     */
-    void ScriptManager::DispatchOnCreate()
-    {
+    void ScriptManager::DispatchOnCreate() {
         this->ScriptsChanged();
 
-        for (auto gameObject : gameObjects)
-        {
+        for (const auto gameObject : gameObjects) {
             gameObject->GetScript()->OnCreate();
         }
     }
 
-    void ScriptManager::DispatchOnUpdate()
-    {
+    void ScriptManager::DispatchOnUpdate() {
         this->ScriptsChanged();
 
-        for (auto gameObject : gameObjects)
-        {
+        for (const auto gameObject : gameObjects) {
             gameObject->GetScript()->OnUpdate();
         }
     }
